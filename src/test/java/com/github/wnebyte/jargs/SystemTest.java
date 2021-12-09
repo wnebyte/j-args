@@ -1,24 +1,24 @@
 package com.github.wnebyte.jargs;
 
-import com.github.wnebyte.args.ArgumentFactoryBuilder;
-import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Assert;
+import com.github.wnebyte.jarguments.factory.ArgumentCollectionFactoryBuilder;
 
 public class SystemTest {
 
     @Test
     public void testOnlyRequired() {
         ArgumentContext context = new ArgumentContext(new Configuration()
-                .setArguments(new ArgumentFactoryBuilder().build()
+                .setArguments(new ArgumentCollectionFactoryBuilder().build()
                         .setNames("-a", "--a", "---a")
                         .setType(String.class)
-                        .setRequired()
-                        .create()
+                        .setIsRequired()
+                        .append()
                         .setNames("-b", "--b", "---b")
-                        .setRequired()
+                        .setIsRequired()
                         .setType(String.class)
-                        .create()
-                        .getArguments())
+                        .append()
+                        .get())
                 .exit(false)
         );
         String i0 = "--a 'my input' -b \"hello hello\"";
@@ -40,18 +40,18 @@ public class SystemTest {
     @Test
     public void testOnlyOptional() {
         ArgumentContext context = new ArgumentContext(new Configuration()
-                .setArguments(new ArgumentFactoryBuilder().build()
+                .setArguments(new ArgumentCollectionFactoryBuilder().build()
                         .setNames("-a", "--a", "---a")
                         .setType(String.class)
-                        .setOptional()
+                        .setIsOptional()
                         .setDefaultValue("def0")
-                        .create()
+                        .append()
                         .setNames("-b", "--b", "---b")
-                        .setOptional()
+                        .setIsOptional()
                         .setDefaultValue("def1")
                         .setType(String.class)
-                        .create()
-                        .getArguments())
+                        .append()
+                        .get())
                 .exit(false)
         );
         String i0 = "-a hello -b hej";
@@ -68,17 +68,19 @@ public class SystemTest {
         Assert.assertEquals("def0", context.parse(i3).getAsString("-a"));
         String i5 = "-a hello -b hej -c";
         Assert.assertNull(context.parse(i5));
+        String a = context.parse(i0).get("-a", String.class);
+        Assert.assertEquals("hello", a);
     }
 
     @Test
     public void testOnlyPositional() {
         ArgumentContext context = new ArgumentContext(new Configuration()
-                .setArguments(new ArgumentFactoryBuilder().build()
-                        .setPositional()
-                        .create(String.class)
-                        .setPositional()
-                        .create(String.class)
-                        .getArguments())
+                .setArguments(new ArgumentCollectionFactoryBuilder().build()
+                        .setIsPositional()
+                        .append(String.class)
+                        .setIsPositional()
+                        .append(String.class)
+                        .get())
                 .exit(false)
         );
         String i0 = "'hello there' hello";
@@ -94,18 +96,18 @@ public class SystemTest {
     @Test
     public void testComposition() {
         ArgumentContext context = new ArgumentContext(new Configuration()
-                .setArguments(new ArgumentFactoryBuilder().build()
+                .setArguments(new ArgumentCollectionFactoryBuilder().build()
                         .setNames("-a", "--a", "---a")
-                        .setPositional()
-                        .create(String.class)
+                        .setIsPositional()
+                        .append(String.class)
                         .setNames("-b", "--b", "---b")
-                        .setRequired()
-                        .create(int.class)
+                        .setIsRequired()
+                        .append(int.class)
                         .setNames("-c", "--c", "---c")
-                        .setOptional()
+                        .setIsOptional()
                         .setDefaultValue("'default value'")
-                        .create(String.class)
-                        .getArguments())
+                        .append(String.class)
+                        .get())
                 .exit(false)
         );
         String i0 = "\"this positional value\" -b 100 -c 'optional value'";
@@ -114,7 +116,7 @@ public class SystemTest {
         Assert.assertNotNull(context.parse(i0));
         Assert.assertNotNull(context.parse(i1));
         Assert.assertNotNull(context.parse(i2));
-        Assert.assertEquals("'default value'", context.parse(i2).getAsString("-c"));
+        Assert.assertEquals("default value", context.parse(i2).getAsString("-c"));
         String i3 = "-b 100 -c 'optional value'";
         String i4 = "";
         Assert.assertNull(context.parse(i3));

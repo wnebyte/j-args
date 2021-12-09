@@ -1,24 +1,38 @@
-# j-args
+# jargs
 java-library
 
-## Sample
-To use this library simply have a look at the code below.
+## About
+This is a java library which lets the user add higher level arguments to their java executables. 
 
-    ArgumentContext context = new ArgumentContext(new Configuration()
-            .setArguments(new ArgumentFactoryBuilder().build()
-                    .setPositional()
-                    .setType(String.class)
-                    .create()
-                    .setNames("-a", "--a")
-                    .setRequired()
-                    .setType(String.class)
-                    .create()
-                    .setNames("-b", "--b")
-                    .setOptional()
-                    .setDefaultValue("50")
-                    .setType(int.class)
-                    .create()
-                    .getArguments())
-    );
-    Args args = context.parse("'my positional value' -b 100 -a \"my required value\"");    
-    int b = args.getAsInt("-b");
+## Sample
+### Basic
+Sample code demonstrates the basic usage of this library.
+
+    public class Sample {
+    
+        public static void main(String[] vargs) {
+            Args args = Args.parser(
+                new ArgumentCollectionFactoryBuilder().build()
+                        .setNames("host", "-host")
+                        .setIsRequired()
+                        .setType(String.class)
+                        .append()
+                        .setNames("port", "-port")
+                        .setIsOptional()
+                        .setType(int.class)
+                        .setDefaultValue("2000")
+                        .append()
+                        .get()
+            ).parse(vargs);
+            // get the initialized argument values
+            String host = args.get("host", String.class);
+            int port = args.get("port", int.class);
+            // do whatever...
+        }
+    }  
+
+## Build
+
+    dependencies {
+        implementation 'com.github.wnebyte:jarguments:0.0.1'
+    }

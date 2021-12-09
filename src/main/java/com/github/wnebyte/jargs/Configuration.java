@@ -1,16 +1,13 @@
 package com.github.wnebyte.jargs;
 
-import com.github.wnebyte.args.Argument;
-import com.github.wnebyte.args.IWriter;
-import com.github.wnebyte.args.Writer;
-import com.github.wnebyte.args.exception.ConstraintException;
-import com.github.wnebyte.args.exception.ParseException;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import com.github.wnebyte.jarguments.Argument;
+import com.github.wnebyte.jarguments.exception.ConstraintException;
+import com.github.wnebyte.jarguments.exception.ParseException;
 
 /**
  * This class represents a set of configurations to be passed to an instance of the {@link ArgumentContext} class.
@@ -178,12 +175,6 @@ public class Configuration {
         return helpPattern;
     }
 
-    /**
-     * Configure the associated {@linkplain ArgumentContext} to exit/not exit after parsing input that does not match
-     * the specified arguments.
-     * @param value boolean value.
-     * @return this.
-     */
     public Configuration exit(final boolean value) {
         this.exit = value;
         return this;

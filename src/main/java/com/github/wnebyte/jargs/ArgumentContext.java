@@ -1,9 +1,11 @@
 package com.github.wnebyte.jargs;
 
-import com.github.wnebyte.args.ArgumentParser;
-import com.github.wnebyte.args.PatternCreator;
-import com.github.wnebyte.args.exception.ConstraintException;
-import com.github.wnebyte.args.exception.ParseException;
+import com.github.wnebyte.jarguments.ArgumentCollectionParser;
+import com.github.wnebyte.jarguments.ArgumentCollectionPatternGenerator;
+import com.github.wnebyte.jarguments.exception.ConstraintException;
+import com.github.wnebyte.jarguments.exception.ParseException;
+import com.github.wnebyte.jargs.util.Objects;
+
 import java.util.regex.Pattern;
 
 public class ArgumentContext {
@@ -13,18 +15,23 @@ public class ArgumentContext {
     private final Pattern pattern;
 
     public ArgumentContext(final Configuration config) {
-        if (config == null) {
+        if (Objects.isNull(config)) {
             throw new IllegalArgumentException(
                     "Configuration must not be null"
             );
         }
-        if (config.getArguments() == null) {
+        if (Objects.isNull(config.getArguments())) {
             throw new IllegalArgumentException(
                     "Configuration's arguments must not be null"
             );
         }
         this.config = config;
-        this.pattern = new PatternCreator().create(config.getArguments());
+        ArgumentCollectionPatternGenerator generator =
+                new ArgumentCollectionPatternGenerator(config.getArguments());
+        generator.setInclSol(true);
+        generator.setInclEol(true);
+        generator.setRmlws(true);
+        this.pattern = generator.generatePattern();
     }
 
     public Args parse(final String[] args) {
@@ -32,19 +39,20 @@ public class ArgumentContext {
     }
 
     public Args parse(final String input) {
-        if (matchesHelp(input)) {
+        if (isHelpMatch(input)) {
             handleHelp();
             exit();
         }
-        if (matches(input)) {
+        else if (isArgumentsMatch(input)) {
             try {
-                return Args.newInstance(config.getArguments(), new ArgumentParser(config.getArguments()).parse(input));
-            }
-            catch (ParseException e) {
-                handleParseException(e);
+                ArgumentCollectionParser parser = new ArgumentCollectionParser(config.getArguments());
+                return Args.newInstance(config.getArguments(), parser.parse(input));
             }
             catch (ConstraintException e) {
                 handleConstraintException(e);
+            }
+            catch (ParseException e) {
+                handleParseException(e);
             }
         } else {
             handleNoMatch(input);
@@ -95,11 +103,11 @@ public class ArgumentContext {
         }
     }
 
-    private boolean matches(final String input) {
+    private boolean isArgumentsMatch(final String input) {
         return pattern.matcher(input).matches();
     }
 
-    private boolean matchesHelp(final String input) {
+    private boolean isHelpMatch(final String input) {
         return config.getHelpPattern().matcher(input).matches();
     }
 }
