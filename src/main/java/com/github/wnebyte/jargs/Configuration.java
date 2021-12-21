@@ -1,190 +1,97 @@
 package com.github.wnebyte.jargs;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.Collection;
 import java.util.regex.Pattern;
+import com.github.wnebyte.jargs.io.IWriter;
+import com.github.wnebyte.jargs.io.Writer;
 import com.github.wnebyte.jarguments.Argument;
-import com.github.wnebyte.jarguments.exception.ConstraintException;
 import com.github.wnebyte.jarguments.exception.ParseException;
 
-/**
- * This class represents a set of configurations to be passed to an instance of the {@link ArgumentContext} class.
- */
 public class Configuration {
 
-    private Consumer<List<Argument>> helpHandler;
+    /*
+    ###########################
+    #      STATIC FIELDS      #
+    ###########################
+    */
 
-    private Function<List<Argument>, String> helpFormatter = new Function<List<Argument>, String>() {
-        @Override
-        public String apply(final List<Argument> arguments) {
-            StringBuilder stringBuilder = new StringBuilder("Usage: ");
-            stringBuilder.append(Arrays.toString(arguments.toArray()));
-            return new String(stringBuilder);
-        }
-    };
+    public static final Formatter<Collection<Argument>> DEFAULT_HELP_FORMATTER = new HelpFormatter();
 
-    private Consumer<ParseException> parseExceptionHandler;
+    public static final Formatter<ParseException> DEFAULT_PARSE_EXCEPTION_FORMATTER =
+            new Formatter<ParseException>() {
+                @Override
+                public String apply(ParseException e) {
+                    return e.getMessage();
+                }
+            };
 
-    private Function<ParseException, String> parseExceptionFormatter = new Function<ParseException, String>() {
-        @Override
-        public String apply(final ParseException e) {
-            if (e.getArgument() != null) {
-                return "[" + String.join(", ", e.getArgument().getNames()) + "] " +
-                        "could not be initialized with val: " + e.getValue();
-            } else {
-                return e.getMessage();
-            }
-        }
-    };
+    /*
+    ###########################
+    #          FIELDS         #
+    ###########################
+    */
 
-    private Consumer<ConstraintException> constraintExceptionHandler;
+    private Formatter<Collection<Argument>> helpFormatter = DEFAULT_HELP_FORMATTER;
 
-    private Function<ConstraintException, String> constraintExceptionFormatter = Throwable::getMessage;
-
-    private Consumer<String> noMatchHandler;
-
-    private Function<String, String> noMatchFormatter = new Function<String, String>() {
-        @Override
-        public String apply(final String s) {
-            return helpFormatter.apply(getArguments());
-        }
-    };
-
-    private List<Argument> arguments;
+    private Formatter<ParseException> parseExceptionFormatter = DEFAULT_PARSE_EXCEPTION_FORMATTER;
 
     private IWriter writer = new Writer();
 
-    private Pattern helpPattern = Pattern.compile("^(-h|--help)$");
+    private Pattern helpPattern = Pattern.compile("^(--help|-h)$");
 
-    private boolean exit = true;
+    /*
+    ###########################
+    #          SETTERS        #
+    ###########################
+    */
 
-    public Configuration() {}
-
-    public Configuration(final List<Argument> arguments) {
-        setArguments(arguments);
-    }
-
-    public Configuration setArguments(final List<Argument> arguments) {
-        if (arguments != null) {
-            this.arguments = arguments;
-        }
-        return this;
-    }
-
-    public Configuration setWriter(final IWriter writer) {
-        if (writer != null) {
-            this.writer = writer;
-        }
-        return this;
-    }
-
-    public IWriter getWriter() {
-        return writer;
-    }
-
-    public Configuration setHelpHandler(final Consumer<List<Argument>> handler) {
-        this.helpHandler = handler;
-        return this;
-    }
-
-    public Consumer<List<Argument>> getHelpHandler() {
-        return helpHandler;
-    }
-
-    public Configuration setHelpFormatter(final Function<List<Argument>, String> formatter) {
+    public Configuration setHelpFormatter(Formatter<Collection<Argument>> formatter) {
         if (formatter != null) {
             this.helpFormatter = formatter;
         }
         return this;
     }
 
-    public Function<List<Argument>, String> getHelpFormatter() {
-        return helpFormatter;
-    }
-
-    public Configuration setParseExceptionHandler(final Consumer<ParseException> handler) {
-        this.parseExceptionHandler = handler;
-        return this;
-    }
-
-    public Consumer<ParseException> getParseExceptionHandler() {
-        return parseExceptionHandler;
-    }
-
-    public Configuration setParseExceptionFormatter(final Function<ParseException, String> formatter) {
+    public Configuration setParseExceptionFormatter(Formatter<ParseException> formatter) {
         if (formatter != null) {
             this.parseExceptionFormatter = formatter;
         }
         return this;
     }
 
-    public Function<ParseException, String> getParseExceptionFormatter() {
+    public Configuration setWriter(IWriter writer) {
+        if (writer != null) {
+            this.writer = writer;
+        }
+        return this;
+    }
+
+    public Configuration setHelpPattern(String regex) {
+        if (regex != null) {
+            this.helpPattern = Pattern.compile(regex);
+        }
+        return this;
+    }
+
+    /*
+    ###########################
+    #          GETTERS        #
+    ###########################
+    */
+
+    protected Formatter<Collection<Argument>> getHelpFormatter() {
+        return helpFormatter;
+    }
+
+    protected Formatter<ParseException> getParseExceptionFormatter() {
         return parseExceptionFormatter;
     }
 
-    public Configuration setConstraintExceptionHandler(final Consumer<ConstraintException> handler) {
-        this.constraintExceptionHandler = handler;
-        return this;
-    }
-
-    public Consumer<ConstraintException> getConstraintExceptionHandler() {
-        return constraintExceptionHandler;
-    }
-
-    public Configuration setConstraintExceptionFormatter(final Function<ConstraintException, String> formatter) {
-        if (formatter != null) {
-            this.constraintExceptionFormatter = formatter;
-        }
-        return this;
-    }
-
-    public Function<ConstraintException, String> getConstraintExceptionFormatter() {
-        return constraintExceptionFormatter;
-    }
-
-    public Configuration setNoMatchHandler(final Consumer<String> handler) {
-        this.noMatchHandler = handler;
-        return this;
-    }
-
-    public Consumer<String> getNoMatchHandler() {
-        return noMatchHandler;
-    }
-
-    public Configuration setNoMatchFormatter(final Function<String, String> formatter) {
-        if (formatter != null) {
-            this.noMatchFormatter = formatter;
-        }
-        return this;
-    }
-
-    public Function<String, String> getNoMatchFormatter() {
-        return noMatchFormatter;
-    }
-
-    public Configuration setHelpPattern(final String pattern) {
-        if (pattern != null) {
-            this.helpPattern = Pattern.compile(pattern);
-        }
-        return this;
-    }
-
-    public Pattern getHelpPattern() {
+    protected Pattern getHelpPattern() {
         return helpPattern;
     }
 
-    public Configuration exit(final boolean value) {
-        this.exit = value;
-        return this;
-    }
-
-    public List<Argument> getArguments() {
-        return arguments;
-    }
-
-    public boolean getExit() {
-        return exit;
+    protected IWriter getWriter() {
+        return writer;
     }
 }

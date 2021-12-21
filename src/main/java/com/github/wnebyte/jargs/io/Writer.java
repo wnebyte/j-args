@@ -1,4 +1,4 @@
-package com.github.wnebyte.jargs;
+package com.github.wnebyte.jargs.io;
 
 public class Writer implements IWriter {
 

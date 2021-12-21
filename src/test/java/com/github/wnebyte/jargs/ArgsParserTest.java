@@ -2,15 +2,15 @@ package com.github.wnebyte.jargs;
 
 import org.junit.Test;
 import org.junit.Assert;
-import com.github.wnebyte.jarguments.factory.ArgumentCollectionFactoryBuilder;
+import com.github.wnebyte.jarguments.factory.ArgumentFactory;
 
 public class ArgsParserTest {
 
     @Test
     public void test00() {
         Args args = Args.parser()
-                .setArguments(new ArgumentCollectionFactoryBuilder().build()
-                        .setNames("-a")
+                .setArguments(ArgumentFactory.builder().build()
+                        .setName("-a")
                         .setType(int.class)
                         .setIsOptional()
                         .setDefaultValue("5")
@@ -24,12 +24,13 @@ public class ArgsParserTest {
 
     @Test
     public void test01() {
-        ArgsParser parser = Args.parser(new ArgumentCollectionFactoryBuilder().build()
-                .setNames("host", "-host", "--host")
+        ArgsParser parser = Args.parser()
+                .setArguments(ArgumentFactory.builder().build()
+                .setName("host", "-host", "--host")
                 .setIsOptional()
                 .setDefaultValue("localhost")
                 .append(String.class)
-                .setNames("port", "-port", "--port")
+                .setName("port", "-port", "--port")
                 .setIsOptional()
                 .setDefaultValue("2000")
                 .append(int.class)

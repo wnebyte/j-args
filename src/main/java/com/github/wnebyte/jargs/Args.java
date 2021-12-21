@@ -3,20 +3,27 @@ package com.github.wnebyte.jargs;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.github.wnebyte.jargs.util.Objects;
 import com.github.wnebyte.jarguments.Argument;
 import static com.github.wnebyte.jarguments.ArgumentSupport.*;
 
 /**
- * This class represents a map of initialized instances of type {@link Argument}.
+ * This class represents a map of initialized Arguments.
  */
 public class Args {
 
-    /* ---------------- Fields ---------------- */
+    /*
+    ###########################
+    #          FIELDS         #
+    ###########################
+    */
 
     private final Map<Argument, Object> map;
 
-    /* ---------------- Constructors ---------------- */
+    /*
+    ###########################
+    #       CONSTRUCTORS      #
+    ###########################
+    */
 
     /**
      * Constructs a new instance using the specified <code>map</code>.
@@ -32,7 +39,11 @@ public class Args {
         );
     }
 
-    /* ---------------- Static Functions ---------------- */
+    /*
+    ###########################
+    #     STATIC UTILITIES    #
+    ###########################
+    */
 
     /**
      * Constructs a new instance using the specified <code>arguments</code> and <code>objects</code>.
@@ -41,9 +52,10 @@ public class Args {
      * @return a new instance.
      */
     static Args newInstance(final List<Argument> arguments, final Object[] objects) {
-        if (Objects.isNull(arguments, objects)) {
+        if ((arguments == null) || (objects == null)) {
             return null;
         }
+        assert arguments.size() == objects.length;
         Map<Argument, Object> map = new HashMap<>(objects.length);
         for (int i = 0; i < objects.length; i++) {
             Argument key = getByIndex(arguments, i);
@@ -53,13 +65,8 @@ public class Args {
         return new Args(map);
     }
 
-    /**
-     * Constructs and returns  a new instance of <code>ArgsParser</code> using the specified <code>arguments</code>.
-     * @param arguments
-     * @return
-     */
-    public static ArgsParser parser(List<Argument> arguments) {
-        return new ArgsParser(arguments);
+    public static ArgsParser parser(Configuration conf) {
+        return new ArgsParser(conf);
     }
 
     public static ArgsParser parser() {
@@ -67,7 +74,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>boolean</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -84,7 +91,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>boolean</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -101,7 +108,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>byte</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -118,7 +125,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>byte</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -135,7 +142,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>char</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -152,7 +159,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>char</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -169,7 +176,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>double</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -186,7 +193,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>double</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -203,7 +210,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>float</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -220,7 +227,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>float</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -237,7 +244,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>int</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -254,7 +261,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>int</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -271,7 +278,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>long</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -288,7 +295,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>long</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -305,7 +312,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>short</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -322,7 +329,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>short</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -339,7 +346,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>String</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -356,7 +363,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>String</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -373,7 +380,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>Object</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -390,7 +397,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>Object</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -407,10 +414,10 @@ public class Args {
     }
 
     /**
-     * Returns the (initialized) argument whose set of names <code>contains</code> the specified <code>name</code>, as
-     * an instance of type <code>T</code>.
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
+     * an instance of the specified type <code>T</code>.
      * @param name the name of the argument.
-     * @param type the type of the Object to be returned.
+     * @param type the type of the return value.
      * @param <T> the type.
      * @return the initialized argument.
      */
@@ -427,10 +434,10 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>T</code>.
      * @param index the index of the argument.
-     * @param type the type of the Object to be returned.
+     * @param type the type of the return value.
      * @param <T> the type.
      * @return the initialized argument.
      */
@@ -447,10 +454,10 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>T[]</code>.
      * @param name the name of the argument.
-     * @param componentType the component type of the Object to be returned.
+     * @param componentType the component type of the array to be returned.
      * @param <T> the type.
      * @return the initialized argument.
      */
@@ -467,7 +474,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>T[]</code>.
      * @param index the index of the argument.
      * @param componentType the component type of the Object to be returned.
@@ -487,7 +494,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>boolean[]</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -504,7 +511,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>boolean[]</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -521,7 +528,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>byte[]</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -538,7 +545,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>byte[]</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -555,7 +562,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>char[]</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -572,7 +579,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>char[]</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -589,7 +596,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>double[]</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -606,7 +613,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>double[]</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -623,7 +630,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>float[]</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -640,7 +647,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>float[]</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -657,7 +664,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>int[]</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -674,7 +681,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>int[]</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -691,7 +698,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>long[]</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -708,7 +715,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>long[]</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
@@ -725,7 +732,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose name property <code>contains</code> the specified <code>name</code>, as
+     * Returns the (initialized) argument whose name field <code>contains</code> the specified <code>name</code>, as
      * an instance of type <code>short[]</code>.
      * @param name the name of the argument.
      * @return the initialized argument.
@@ -742,7 +749,7 @@ public class Args {
     }
 
     /**
-     * Returns the initialized argument whose index property <code>equals</code> the specified <code>index</code>, as
+     * Returns the (initialized) argument whose index field <code>equals</code> the specified <code>index</code>, as
      * an instance of type <code>short[]</code>.
      * @param index the index of the argument.
      * @return the initialized argument.
