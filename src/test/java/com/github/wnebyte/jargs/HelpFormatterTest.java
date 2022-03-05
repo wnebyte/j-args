@@ -1,15 +1,15 @@
 package com.github.wnebyte.jargs;
 
-import com.github.wnebyte.jarguments.factory.ArgumentFactory;
-import org.junit.Test;
 import java.util.List;
+import org.junit.Test;
 import com.github.wnebyte.jarguments.Argument;
+import com.github.wnebyte.jarguments.factory.ArgumentFactory;
 
 public class HelpFormatterTest {
 
     @Test
     public void test00() {
-        List<Argument> args = ArgumentFactory.builder().build()
+        List<Argument> c = ArgumentFactory.builder().build()
                 .setName("-a", "--a")
                 .setIsRequired()
                 .append(int.class)
@@ -18,7 +18,7 @@ public class HelpFormatterTest {
                 .append(String.class)
                 .get();
         System.out.println("=begin");
-        System.out.print(new HelpFormatter().apply(args));
+        System.out.print(new HelpFormatter().apply(c));
         System.out.println("=end");
     }
 }

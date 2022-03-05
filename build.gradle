@@ -1,10 +1,25 @@
+import java.text.SimpleDateFormat
+
 plugins {
-    id 'java'
+    id 'java-library'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 def projectName = 'jargs'
 group 'com.github.wnebyte'
 version '0.0.1'
+
+sourceCompatibility = "1.8";
+targetCompatibility = "1.8";
+
+javadoc {
+    source = sourceSets.main.allJava
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 repositories {
     mavenCentral()
@@ -13,4 +28,39 @@ repositories {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+jar{
+    manifest{
+        attributes(
+                "Name": projectName,
+                "Implementation-Title": projectName,
+                "Implementation-Version": project.version,
+                "Class-Path": configurations.runtimeClasspath.files.collect { it.getName() }.join(' '),
+                'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+                'Build-Jdk': "${System.properties['java.version']} (${System.properties['java.vendor']}) " +
+                        "${System.properties['java.vm.version']}"
+        )
+    }
+    archiveBaseName.set(projectName)
+}
+
+javadocJar {
+    archiveBaseName.set(projectName)
+    archiveClassifier.set('javadoc')
+    archiveVersion.set(project.version)
+    from(javadoc)
+}
+
+sourcesJar {
+    archiveBaseName.set(projectName)
+    archiveClassifier.set('sources')
+    archiveVersion.set(project.version)
+    from(sourceSets.main.allJava)
+}
+
+shadowJar {
+    archiveBaseName.set(projectName)
+    archiveClassifier.set('fat')
+    archiveVersion.set(project.version)
 }

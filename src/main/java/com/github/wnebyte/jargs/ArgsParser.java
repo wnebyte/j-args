@@ -1,67 +1,127 @@
 package com.github.wnebyte.jargs;
 
+import java.util.Collection;
 import java.util.List;
-import com.github.wnebyte.jargs.io.IWriter;
 import com.github.wnebyte.jarguments.Argument;
-import com.github.wnebyte.jarguments.exception.ParseException;
-import com.github.wnebyte.jarguments.parser.ArgumentParser;
+import com.github.wnebyte.jarguments.TokenSequence;
+import com.github.wnebyte.jarguments.exception.*;
+import com.github.wnebyte.jarguments.parser.AbstractParser;
+import com.github.wnebyte.jarguments.parser.Parser;
 import com.github.wnebyte.jarguments.util.Objects;
-import com.github.wnebyte.jarguments.val.ArgumentValidator;
+import com.github.wnebyte.jarguments.util.Strings;
 
-public class ArgsParser {
+public class ArgsParser extends AbstractArgsParser {
 
-    private List<Argument> args;
+    /*
+    ###########################
+    #     UTILITY METHODS     #
+    ###########################
+    */
+
+    boolean isHelp(TokenSequence tokens) {
+        return (tokens != null) && (tokens.size() == 1) &&
+                (tokens.get(0).equals("--help") || tokens.get(0).equals("-h"));
+    }
+
+    /*
+    ###########################
+    #          FIELDS         #
+    ###########################
+    */
 
     private final Configuration conf;
 
-    private final IWriter writer;
+    private final AbstractParser<TokenSequence, Collection<Argument>> parser;
+
+    private List<Argument> arguments;
+
+    /*
+    ###########################
+    #       CONSTRUCTORS      #
+    ###########################
+    */
 
     public ArgsParser() {
-        this(new Configuration());
+        this(null);
     }
 
     public ArgsParser(Configuration conf) {
         this.conf = Objects.requireNonNullElseGet(conf, Configuration::new);
-        this.writer = conf.getWriter();
+        this.parser = new Parser();
     }
 
-    public ArgsParser setArguments(List<Argument> args) {
-        if (args != null) {
-            this.args = args;
+    /*
+    ###########################
+    #         METHODS         #
+    ###########################
+    */
+
+    public ArgsParser setArguments(List<Argument> arguments) {
+        if (arguments != null) {
+            this.arguments = arguments;
         }
         return this;
     }
 
+    @Override
+    public Args parse(String[] input) {
+        String s = String.join(Strings.WHITESPACE, input);
+        return parse(s);
+    }
+
+    @Override
     public Args parse(String input) {
-        if ((args == null) || (input == null)) {
+        if (arguments == null || input == null) {
             throw new NullPointerException(
-                    "Arguments & input have to be specified."
+                    "Arguments & Input have to be non-null."
             );
         }
-        if (isHelp(input)) {
-            writer.println(conf.getHelpFormatter().apply(args));
-            System.exit(0);
-        }
-        try {
-            if (new ArgumentValidator(args).matches(input)) {
-                Object[] values = new ArgumentParser(args).parse(input);
-                return Args.newInstance(args, values);
+        TokenSequence tokens = TokenSequence.tokenize(input);
+
+        if (isHelp(tokens)) {
+            conf.out().println(conf.getHelpFormatter().apply(arguments));
+
+            if (conf.isExit()) {
+                System.exit(0);
+            } else {
+                return null;
             }
-        } catch (ParseException e) {
-            writer.println(conf.getParseExceptionFormatter().apply(e));
-            writer.println(conf.getHelpFormatter().apply(args));
         }
 
-        System.exit(0);
+        try {
+            parser.parse(tokens, arguments);
+            return Args.newInstance(
+                    arguments,
+                    parser.initialize()
+            );
+        }
+        catch (TypeConversionException e) {
+            conf.err().println(conf.getTypeConversionExceptionFormatter().apply(e));
+        }
+        catch (NoSuchArgumentException e) {
+            conf.err().println(conf.getNoSuchArgumentExceptionFormatter().apply(e));
+        }
+        catch (MissingArgumentValueException e) {
+            conf.err().println(conf.getMissingArgumentValueExceptionFormatter().apply(e));
+        }
+        catch (MalformedArgumentException e) {
+            conf.err().println(conf.getMalformedArgumentExceptionFormatter().apply(e));
+        }
+        catch (MissingArgumentException e) {
+            conf.err().println(conf.getMissingArgumentExceptionFormatter().apply(e));
+        }
+        catch (ParseException e) {
+            conf.err().println(e.getMessage());
+        }
+
+        conf.out().println(conf.getHelpFormatter().apply(arguments));
+
+        if (conf.isExit()) {
+            System.exit(0);
+        } else {
+            return null;
+        }
+
         return null;
     }
-
-    public Args parse(String[] input) {
-        return parse(String.join("", input));
-    }
-
-    private boolean isHelp(String input) {
-        return conf.getHelpPattern().matcher(input).matches();
-    }
-
 }

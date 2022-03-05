@@ -1,15 +1,15 @@
 package com.github.wnebyte.jargs;
 
-import com.github.wnebyte.jarguments.factory.ArgumentFactory;
 import org.junit.Test;
 import org.junit.Assert;
-import com.github.wnebyte.jarguments.factory.ArgumentFactoryBuilder;
+import com.github.wnebyte.jarguments.factory.ArgumentFactory;
 
 public class ModuleTest {
 
     @Test
-    public void testOnlyRequired() {
-        ArgsParser parser = Args.parser()
+    public void testRequired() {
+        ArgsParser parser = Args.parser(new Configuration()
+                .setExit(false))
                 .setArguments(ArgumentFactory.builder().build()
                         .setName("-a", "--a", "---a")
                         .setType(String.class)
@@ -37,8 +37,9 @@ public class ModuleTest {
     }
 
     @Test
-    public void testOnlyOptional() {
-        ArgsParser parser = Args.parser()
+    public void testOptional() {
+        ArgsParser parser = Args.parser(new Configuration()
+                .setExit(false))
                 .setArguments(ArgumentFactory.builder().build()
                         .setName("-a", "--a", "---a")
                         .setType(String.class)
@@ -70,8 +71,9 @@ public class ModuleTest {
     }
 
     @Test
-    public void testOnlyPositional() {
-        ArgsParser parser = Args.parser()
+    public void testPositional() {
+        ArgsParser parser = Args.parser(new Configuration()
+                .setExit(false))
                 .setArguments(ArgumentFactory.builder().build()
                         .setIsPositional()
                         .append(String.class)
@@ -90,7 +92,8 @@ public class ModuleTest {
 
     @Test
     public void testComposition() {
-        ArgsParser parser = Args.parser()
+        ArgsParser parser = Args.parser(new Configuration()
+                .setExit(false))
                 .setArguments(ArgumentFactory.builder().build()
                         .setName("-a", "--a", "---a")
                         .setIsPositional()

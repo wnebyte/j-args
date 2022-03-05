@@ -1,29 +1,50 @@
-# jargs
+# j-args
 java-library
 
+## Table of Contents
+
+- [About](#about)
+- [Sample](#sample)
+- [Build](#build)
+- [Documentation](#documentation)
+- [Licence](#licence)
+
 ## About
-This java library lets the user add higher-level arguments/options to 
-their java executables. 
+This library lets a prospective user add higher-level arguments/options to 
+their java executables.
 
 ## Sample
 
+Sample demonstrates how to declare a parser & specify arguments:
 
-Sample code demonstrates how to use the classes found in this library.
+    public static void main(String[] input) {
+        ArgsParser = Args.parser()
+                .setArguments(ArgumentFactory.builder().build()
+                        .setName("-a", "--a")
+                        .setDescription("my required argument")
+                        .setType(String.class)
+                        .append()
+                        .setName("-b", "--b")
+                        .setDescription("my optional argument")
+                        .setIsOptional()
+                        .setDefaultValue("2000")
+                        .setType(int.class)
+                        .append()
+                        .get()
+                );
+    }
+    
+Sample demonstrates how to parse input & retrieve values:
 
-    public class Sample {
-        public static void main(String[] args) {
-            Args a = Args.parser()
-                    .setArguments(ArgumentFactory.builder().build()
-                           .setName("--host", "-h")
-                           .append(String.class)
-                           .setName("--port", "-p")
-                           .setIsOptional()
-                           .setDefaultValue("2000")
-                           .append(int.class)
-                           .get()
-                ).parse(args);
-                
-            String host = a.get("-h", String.class);
-            int port = a.get("-p", int.class);
-        }
-    }  
+    // parse
+    Args args = parser.parse(input);
+    
+    // retrieve values
+    String a = args.get("-a", String.class);
+    int b = args.get("-b", int.class);
+
+## Build
+
+## Documentation
+
+## Licence
