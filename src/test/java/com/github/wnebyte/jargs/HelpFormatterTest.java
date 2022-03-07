@@ -11,9 +11,11 @@ public class HelpFormatterTest {
     public void test00() {
         List<Argument> c = ArgumentFactory.builder().build()
                 .setName("-a", "--a")
+                .setDescription("my required argument")
                 .setIsRequired()
                 .append(int.class)
                 .setName("-b", "--b")
+                .setDescription("my optional argument")
                 .setIsOptional()
                 .append(String.class)
                 .get();
