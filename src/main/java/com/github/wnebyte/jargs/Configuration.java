@@ -1,8 +1,7 @@
 package com.github.wnebyte.jargs;
 
-import java.io.PrintStream;
 import java.util.Collection;
-
+import java.io.PrintStream;
 import com.github.wnebyte.jarguments.Argument;
 import com.github.wnebyte.jarguments.exception.*;
 
@@ -89,6 +88,17 @@ public class Configuration {
                 }
             };
 
+    /**
+     * Default impl.
+     */
+    public static final Formatter<ConstraintException> DEFAULT_CONSTRAINT_EXCEPTION_FORMATTER =
+            new Formatter<ConstraintException>() {
+                @Override
+                public String apply(ConstraintException e) {
+                    return e.getMessage();
+                }
+            };
+
     /*
     ###########################
     #          FIELDS         #
@@ -101,8 +111,8 @@ public class Configuration {
 
     private boolean exit = true;
 
-    private Formatter<Collection<Argument>> helpFormatter
-            = DEFAULT_HELP_FORMATTER;
+    private Formatter<Collection<Argument>> helpFormatter =
+            DEFAULT_HELP_FORMATTER;
 
     private Formatter<TypeConversionException> typeConversionExceptionFormatter =
             DEFAULT_TYPE_CONVERSION_EXCEPTION_FORMATTER;
@@ -119,8 +129,11 @@ public class Configuration {
     private Formatter<MissingArgumentException> missingArgumentExceptionFormatter =
             DEFAULT_MISSING_ARGUMENT_EXCEPTION_FORMATTER;
 
-    private Formatter<ParseException> parseExceptionFormatter
-            = DEFAULT_PARSE_EXCEPTION_FORMATTER;
+    private Formatter<ParseException> parseExceptionFormatter =
+            DEFAULT_PARSE_EXCEPTION_FORMATTER;
+
+    private Formatter<ConstraintException> constraintExceptionFormatter =
+            DEFAULT_CONSTRAINT_EXCEPTION_FORMATTER;
 
     /*
     ###########################
@@ -194,6 +207,13 @@ public class Configuration {
         return this;
     }
 
+    public Configuration setConstraintExceptionFormatter(Formatter<ConstraintException> formatter) {
+        if (formatter != null) {
+            this.constraintExceptionFormatter = formatter;
+        }
+        return this;
+    }
+
     /*
     ###########################
     #          GETTERS        #
@@ -234,5 +254,9 @@ public class Configuration {
     
     public Formatter<MissingArgumentException> getMissingArgumentExceptionFormatter() {
         return this.missingArgumentExceptionFormatter;
+    }
+
+    public Formatter<ConstraintException> getConstraintExceptionFormatter() {
+        return constraintExceptionFormatter;
     }
 }

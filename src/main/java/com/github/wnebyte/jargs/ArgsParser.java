@@ -110,6 +110,9 @@ public class ArgsParser extends AbstractArgsParser {
         catch (MissingArgumentException e) {
             conf.err().println(conf.getMissingArgumentExceptionFormatter().apply(e));
         }
+        catch (ConstraintException e) {
+            conf.err().println(conf.getConstraintExceptionFormatter().apply(e));
+        }
         catch (ParseException e) {
             conf.err().println(e.getMessage());
         }
