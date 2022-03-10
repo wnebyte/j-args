@@ -17,14 +17,14 @@ public class HelpFormatter implements Formatter<Collection<Argument>> {
     ###########################
     */
 
-    private static int maxLength(final Collection<Argument> c) {
+    private static int maxLength(Collection<Argument> c) {
         return c.stream().map(ARGUMENT_FORMATTER)
                 .max(Comparator.comparingInt(String::length))
                 .orElse(Strings.EMPTY)
                 .length();
     }
 
-    private static int maxTotalLength(final Collection<Argument> c) {
+    private static int maxTotalLength(Collection<Argument> c) {
         int max = maxLength(c);
 
         return c.stream().map(new Formatter<Argument>() {
