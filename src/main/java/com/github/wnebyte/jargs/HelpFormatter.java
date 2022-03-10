@@ -81,7 +81,7 @@ public class HelpFormatter implements Formatter<Collection<Argument>> {
 
         if (!c.isEmpty()) {
             int maxLength  = maxLength(c);
-            int maxTotalLength = maxTotalLength(c);
+           // int maxTotalLength = maxTotalLength(c);
 
             for (Argument argument : c) {
                 String s = ARGUMENT_FORMATTER.apply(argument);
@@ -89,8 +89,11 @@ public class HelpFormatter implements Formatter<Collection<Argument>> {
                 String ln = new StringBuilder().append("\t").append(s).append(indent)
                         .append(Objects.requireNonNullElseGet(argument.getDesc(), () -> Strings.EMPTY)).toString();
                 out.append(ln);
+                /*
                 indent = indent((maxTotalLength + 1) - ln.length());
                 out.append(indent).append("\n");
+                 */
+                out.append("\n");
             }
         }
 
