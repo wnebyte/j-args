@@ -65,7 +65,7 @@ public class ArgsParser extends AbstractArgsParser {
 
     @Override
     public Args parse(String[] input) {
-        String s = String.join(Strings.WHITESPACE, input);
+        String s = String.join(Strings.WHITESPACE, (input == null) ? new String[0] : input);
         return parse(s);
     }
 
@@ -113,7 +113,7 @@ public class ArgsParser extends AbstractArgsParser {
         catch (ConstraintException e) {
             conf.err().println(conf.getConstraintExceptionFormatter().apply(e));
         }
-        catch (ParseException e) {
+        catch (Exception e) {
             conf.err().println(e.getMessage());
         }
 

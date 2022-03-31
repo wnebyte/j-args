@@ -10,11 +10,11 @@ public class SampleTest {
         List<Argument> c = ArgumentFactory.builder().build()
                 .setName("-a", "--a")
                 .setDescription("my required argument")
-                .setIsRequired()
+                .isRequired()
                 .append(int.class)
                 .setName("-b", "--b")
                 .setDescription("my optional argument")
-                .setIsOptional()
+                .isOptional()
                 .append(String.class)
                 .get();
         System.out.println("=begin");
