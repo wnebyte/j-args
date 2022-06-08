@@ -1,20 +1,23 @@
 package com.github.wnebyte.jargs;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import com.github.wnebyte.jarguments.Argument;
-import com.github.wnebyte.jarguments.TokenSequence;
 import com.github.wnebyte.jarguments.exception.*;
 import com.github.wnebyte.jarguments.parser.AbstractParser;
 import com.github.wnebyte.jarguments.parser.Parser;
 import com.github.wnebyte.jarguments.util.Objects;
 import com.github.wnebyte.jarguments.util.Strings;
+import com.github.wnebyte.jarguments.util.TokenSequence;
 
-public class ArgsParser extends AbstractArgsParser {
+public class ArgsParser implements AbstractArgsParser {
+
+    public static class Configuration {
+
+    }
 
     /*
     ###########################
-    #     UTILITY METHODS     #
+    #      STATIC METHODS     #
     ###########################
     */
 
@@ -29,11 +32,11 @@ public class ArgsParser extends AbstractArgsParser {
     ###########################
     */
 
-    private final Configuration conf;
+    private final ArgsParserConfiguration conf;
 
-    private final AbstractParser<TokenSequence, Collection<Argument>> parser;
+    private final AbstractParser parser;
 
-    private List<Argument> arguments;
+    private Set<Argument> arguments;
 
     /*
     ###########################
@@ -42,11 +45,20 @@ public class ArgsParser extends AbstractArgsParser {
     */
 
     public ArgsParser() {
-        this(null);
+        this(null, null);
     }
 
-    public ArgsParser(Configuration conf) {
-        this.conf = Objects.requireNonNullElseGet(conf, Configuration::new);
+    public ArgsParser(ArgsParserConfiguration conf) {
+        this(conf, null);
+    }
+
+    public ArgsParser(Set<Argument> arguments) {
+        this(null, arguments);
+    }
+
+    public ArgsParser(ArgsParserConfiguration conf, Set<Argument> arguments) {
+        this.conf = Objects.requireNonNullElseGet(conf, ArgsParserConfiguration::new);
+        this.arguments = arguments;
         this.parser = new Parser();
     }
 
@@ -55,13 +67,6 @@ public class ArgsParser extends AbstractArgsParser {
     #         METHODS         #
     ###########################
     */
-
-    public ArgsParser setArguments(List<Argument> arguments) {
-        if (arguments != null) {
-            this.arguments = arguments;
-        }
-        return this;
-    }
 
     @Override
     public Args parse(String[] input) {
@@ -89,26 +94,20 @@ public class ArgsParser extends AbstractArgsParser {
         }
 
         try {
-            parser.parse(tokens, arguments);
-            return Args.newInstance(
-                    arguments,
-                    parser.initialize()
-            );
+            parser.parse(input, tokens, arguments);
+            return Args.newInstance(arguments, parser.initialize());
         }
         catch (TypeConversionException e) {
-            conf.err().println(conf.getTypeConversionExceptionFormatter().apply(e));
+            conf.err().println(conf.getTypeConversionFormatter().apply(e));
         }
         catch (NoSuchArgumentException e) {
-            conf.err().println(conf.getNoSuchArgumentExceptionFormatter().apply(e));
-        }
-        catch (MissingArgumentValueException e) {
-            conf.err().println(conf.getMissingArgumentValueExceptionFormatter().apply(e));
+            conf.err().println(conf.getNoSuchArgumentFormatter().apply(e));
         }
         catch (MalformedArgumentException e) {
-            conf.err().println(conf.getMalformedArgumentExceptionFormatter().apply(e));
+            conf.err().println(conf.getMalformedArgumentFormatter().apply(e));
         }
         catch (MissingArgumentException e) {
-            conf.err().println(conf.getMissingArgumentExceptionFormatter().apply(e));
+            conf.err().println(conf.getMissingArgumentFormatter().apply(e));
         }
         catch (ConstraintException e) {
             conf.err().println(conf.getConstraintExceptionFormatter().apply(e));
@@ -126,5 +125,10 @@ public class ArgsParser extends AbstractArgsParser {
         }
 
         return null;
+    }
+
+    public ArgsParser setArguments(Set<Argument> arguments) {
+        this.arguments = arguments;
+        return this;
     }
 }

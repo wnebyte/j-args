@@ -1,14 +1,15 @@
 package com.github.wnebyte.jargs;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Collection;
 import com.github.wnebyte.jarguments.Argument;
 import static com.github.wnebyte.jarguments.ArgumentSupport.getByName;
 import static com.github.wnebyte.jarguments.ArgumentSupport.getByIndex;
 
 /**
- * This class represents a map of initialized Arguments.
+ * This class represents an associative structure mapping instances of {@link Argument} to their
+ * initialized values.
  */
 public class Args {
 
@@ -21,7 +22,7 @@ public class Args {
     /**
      * Constructs a new instance using the specified <code>Collection</code> and <code>values</code>.
      * @param arguments a Collection of arguments.
-     * @param values the initialized argument values.
+     * @param values an array of initialized values.
      * @return a new instance.
      */
     static Args newInstance(Collection<Argument> arguments, Object[] values) {
@@ -37,7 +38,7 @@ public class Args {
         return new Args(map);
     }
 
-    public static ArgsParser parser(Configuration conf) {
+    public static ArgsParser parser(ArgsParserConfiguration conf) {
         return new ArgsParser(conf);
     }
 
