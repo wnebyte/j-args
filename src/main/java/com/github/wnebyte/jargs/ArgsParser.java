@@ -3,6 +3,7 @@ package com.github.wnebyte.jargs;
 import java.util.Set;
 import com.github.wnebyte.jarguments.Argument;
 import com.github.wnebyte.jarguments.exception.*;
+import com.github.wnebyte.jarguments.formatter.Formatter;
 import com.github.wnebyte.jarguments.parser.AbstractParser;
 import com.github.wnebyte.jarguments.parser.Parser;
 import com.github.wnebyte.jarguments.util.Objects;
@@ -10,10 +11,6 @@ import com.github.wnebyte.jarguments.util.Strings;
 import com.github.wnebyte.jarguments.util.TokenSequence;
 
 public class ArgsParser implements AbstractArgsParser {
-
-    public static class Configuration {
-
-    }
 
     /*
     ###########################
@@ -84,7 +81,9 @@ public class ArgsParser implements AbstractArgsParser {
         TokenSequence tokens = TokenSequence.tokenize(input);
 
         if (isHelp(tokens)) {
-            conf.out().println(conf.getHelpFormatter().apply(arguments));
+            Formatter<Set<Argument>> formatter
+                    = conf.getHelpFormatter();
+            conf.out().println(formatter.apply(arguments));
 
             if (conf.isExit()) {
                 System.exit(0);
@@ -94,29 +93,39 @@ public class ArgsParser implements AbstractArgsParser {
         }
 
         try {
-            parser.parse(input, tokens, arguments);
-            return Args.newInstance(arguments, parser.initialize());
-        }
-        catch (TypeConversionException e) {
-            conf.err().println(conf.getTypeConversionFormatter().apply(e));
+            Object[] values = parser.parse(input, tokens, arguments);
+            return Args.newInstance(arguments, values);
         }
         catch (NoSuchArgumentException e) {
-            conf.err().println(conf.getNoSuchArgumentFormatter().apply(e));
+            Formatter<NoSuchArgumentException> formatter
+                    = conf.getFormatter(NoSuchArgumentException.class);
+            conf.err().println(formatter.apply(e));
         }
         catch (MalformedArgumentException e) {
-            conf.err().println(conf.getMalformedArgumentFormatter().apply(e));
+            Formatter<MalformedArgumentException> formatter
+                    = conf.getFormatter(MalformedArgumentException.class);
+            conf.err().println(formatter.apply(e));
         }
         catch (MissingArgumentException e) {
-            conf.err().println(conf.getMissingArgumentFormatter().apply(e));
+            Formatter<MissingArgumentException> formatter
+                    = conf.getFormatter(MissingArgumentException.class);
+            conf.err().println(formatter.apply(e));
+        }
+        catch (TypeConversionException e) {
+            Formatter<TypeConversionException> formatter
+                    = conf.getFormatter(TypeConversionException.class);
+            conf.err().println(formatter.apply(e));
         }
         catch (ConstraintException e) {
-            conf.err().println(conf.getConstraintExceptionFormatter().apply(e));
+            Formatter<ConstraintException> formatter
+                    = conf.getFormatter(ConstraintException.class);
+            conf.err().println(formatter.apply(e));
         }
-        catch (Exception e) {
-            conf.err().println(e.getMessage());
-        }
+        catch (Exception ignored) { }
 
-        conf.out().println(conf.getHelpFormatter().apply(arguments));
+        Formatter<Set<Argument>> formatter
+                = conf.getHelpFormatter();
+        conf.out().println(formatter.apply(arguments));
 
         if (conf.isExit()) {
             System.exit(0);

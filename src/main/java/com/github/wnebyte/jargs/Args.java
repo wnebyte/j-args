@@ -8,8 +8,8 @@ import static com.github.wnebyte.jarguments.ArgumentSupport.getByName;
 import static com.github.wnebyte.jarguments.ArgumentSupport.getByIndex;
 
 /**
- * This class represents an associative structure mapping instances of {@link Argument} to their
- * initialized values.
+ * This class represents an associative structure that maps instances of {@link Argument} to their
+ * initialized value.
  */
 public class Args {
 
