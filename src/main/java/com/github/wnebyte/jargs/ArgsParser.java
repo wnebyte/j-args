@@ -2,14 +2,16 @@ package com.github.wnebyte.jargs;
 
 import java.util.Set;
 import com.github.wnebyte.jarguments.Argument;
+import com.github.wnebyte.jarguments.ContextView;
+import com.github.wnebyte.jarguments.Formatter;
 import com.github.wnebyte.jarguments.exception.*;
-import com.github.wnebyte.jarguments.formatter.Formatter;
 import com.github.wnebyte.jarguments.parser.AbstractParser;
 import com.github.wnebyte.jarguments.parser.Parser;
 import com.github.wnebyte.jarguments.util.Objects;
 import com.github.wnebyte.jarguments.util.Strings;
 import com.github.wnebyte.jarguments.util.TokenSequence;
 
+@SuppressWarnings("resource")
 public class ArgsParser implements AbstractArgsParser {
 
     /*
@@ -18,7 +20,11 @@ public class ArgsParser implements AbstractArgsParser {
     ###########################
     */
 
-    boolean isHelp(TokenSequence tokens) {
+    static ContextView toContextView(String description, Set<Argument> arguments) {
+        return (description == null) ? ContextView.of(arguments) : ContextView.of(description, arguments);
+    }
+
+    static boolean isHelp(TokenSequence tokens) {
         return (tokens != null) && (tokens.size() == 1) &&
                 (tokens.get(0).equals("--help") || tokens.get(0).equals("-h"));
     }
@@ -34,6 +40,8 @@ public class ArgsParser implements AbstractArgsParser {
     private final AbstractParser parser;
 
     private Set<Argument> arguments;
+
+    private String description;
 
     /*
     ###########################
@@ -65,6 +73,16 @@ public class ArgsParser implements AbstractArgsParser {
     ###########################
     */
 
+    public ArgsParser setArguments(Set<Argument> arguments) {
+        this.arguments = arguments;
+        return this;
+    }
+
+    public ArgsParser setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
     @Override
     public Args parse(String[] input) {
         String s = String.join(Strings.WHITESPACE, (input == null) ? new String[0] : input);
@@ -81,9 +99,9 @@ public class ArgsParser implements AbstractArgsParser {
         TokenSequence tokens = TokenSequence.tokenize(input);
 
         if (isHelp(tokens)) {
-            Formatter<Set<Argument>> formatter
+            Formatter<ContextView> formatter
                     = conf.getHelpFormatter();
-            conf.out().println(formatter.apply(arguments));
+            conf.out().println(formatter.apply(toContextView(description, arguments)));
 
             if (conf.isExit()) {
                 System.exit(0);
@@ -123,9 +141,9 @@ public class ArgsParser implements AbstractArgsParser {
         }
         catch (Exception ignored) { }
 
-        Formatter<Set<Argument>> formatter
+        Formatter<ContextView> formatter
                 = conf.getHelpFormatter();
-        conf.out().println(formatter.apply(arguments));
+        conf.out().println(formatter.apply(toContextView(description, arguments)));
 
         if (conf.isExit()) {
             System.exit(0);
@@ -134,10 +152,5 @@ public class ArgsParser implements AbstractArgsParser {
         }
 
         return null;
-    }
-
-    public ArgsParser setArguments(Set<Argument> arguments) {
-        this.arguments = arguments;
-        return this;
     }
 }

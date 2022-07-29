@@ -1,17 +1,16 @@
 package com.github.wnebyte.jargs;
 
-import java.util.Set;
 import java.io.PrintStream;
-import com.github.wnebyte.jarguments.Argument;
-import com.github.wnebyte.jarguments.conf.Configuration;
+import com.github.wnebyte.jarguments.ContextView;
+import com.github.wnebyte.jarguments.Formatter;
+import com.github.wnebyte.jarguments.BaseConfiguration;
 import com.github.wnebyte.jarguments.exception.ParseException;
 import com.github.wnebyte.jarguments.util.IConsole;
-import com.github.wnebyte.jarguments.formatter.Formatter;
 
 /**
  * This class is used to specify configuration options for instances of {@link ArgsParser}.
  */
-public class ArgsParserConfiguration extends Configuration {
+public class ArgsParserConfiguration extends BaseConfiguration {
 
     /*
     ###########################
@@ -47,7 +46,7 @@ public class ArgsParserConfiguration extends Configuration {
     }
 
     @Override
-    public ArgsParserConfiguration setHelpFormatter(Formatter<Set<Argument>> formatter) {
+    public ArgsParserConfiguration setHelpFormatter(Formatter<ContextView> formatter) {
         super.setHelpFormatter(formatter);
         return this;
     }
