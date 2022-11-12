@@ -58,7 +58,7 @@ public class ArgsParserConfiguration extends BaseConfiguration {
         return this;
     }
 
-    public ArgsParserConfiguration setExit(boolean value) {
+    public ArgsParserConfiguration setExitOnException(boolean value) {
         this.exit = value;
         return this;
     }

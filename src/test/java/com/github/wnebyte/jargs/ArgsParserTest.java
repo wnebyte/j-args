@@ -11,7 +11,7 @@ public class ArgsParserTest {
         ArgumentFactory factory = new ArgumentFactory();
         factory.create("-a", null, false,
                 null, null, "5", int.class);
-        ArgsParser parser = new ArgsParser(new ArgsParserConfiguration().setExit(false), factory.getAll());
+        ArgsParser parser = new ArgsParser(new ArgsParserConfiguration().setExitOnException(false), factory.getAll());
         Args args = parser.parse("-a 10");
         int a = args.get("-a", int.class);
         Assert.assertEquals(10, a);
@@ -24,7 +24,7 @@ public class ArgsParserTest {
                 null, null, "localhost", String.class);
         factory.create("--port, -port, port", null, false,
                 null, null, "2000", int.class);
-        ArgsParser parser = new ArgsParser(new ArgsParserConfiguration().setExit(false), factory.getAll());
+        ArgsParser parser = new ArgsParser(new ArgsParserConfiguration().setExitOnException(false), factory.getAll());
         Args args = parser.parse("");
         String host = args.get("host", String.class);
         int port = args.get("port", int.class);
@@ -45,7 +45,7 @@ public class ArgsParserTest {
                 null, null, null, String.class);
         factory.create("--port, -port, port", null, false,
                 null, null, "2000", int.class);
-        ArgsParser parser = new ArgsParser(new ArgsParserConfiguration().setExit(false), factory.getAll());
+        ArgsParser parser = new ArgsParser(new ArgsParserConfiguration().setExitOnException(false), factory.getAll());
         String input = "host 127.0.0.1 port 2505";
         Args args = parser.parse(input);
         Assert.assertNotNull(args);

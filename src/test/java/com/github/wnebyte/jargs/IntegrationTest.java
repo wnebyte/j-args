@@ -13,7 +13,7 @@ public class IntegrationTest {
                 null, null, null, String.class);
         factory.create("---b, --b, -b", null, true,
                 null, null, null, String.class);
-        ArgsParser parser = new ArgsParser(new ArgsParserConfiguration().setExit(false), factory.getAll());
+        ArgsParser parser = new ArgsParser(new ArgsParserConfiguration().setExitOnException(false), factory.getAll());
         String i0 = "--a 'my input' -b \"hello hello\"";
         String i1 = "---b 'hello hello' -a 'hej hej'";
         String i2 = "---a hej --b 'hej hej'";
@@ -37,7 +37,7 @@ public class IntegrationTest {
                 null, null, "def0", String.class);
         factory.create("---b, --b, -b", null, false,
                 null, null, "def1", String.class);
-        ArgsParser parser = new ArgsParser(new ArgsParserConfiguration().setExit(false), factory.getAll());
+        ArgsParser parser = new ArgsParser(new ArgsParserConfiguration().setExitOnException(false), factory.getAll());
         String i0 = "-a hello -b hej";
         String i1 = "--b hello --a 'hej hej'";
         String i2 = "-a \"hello there\"";
@@ -64,7 +64,7 @@ public class IntegrationTest {
         factory.create(null, null, true,
                 null, null, null, String.class);
         ArgsParser parser = new ArgsParserBuilder()
-                .setConfiguration(new ArgsParserConfiguration().setExit(false))
+                .setConfiguration(new ArgsParserConfiguration().setExitOnException(false))
                 .setArguments(factory.getAll())
                 .build();
         String i0 = "'hello there' hello";
@@ -87,7 +87,7 @@ public class IntegrationTest {
         factory.create("---c, --c, -c", null, false,
                 null, null, "'default value'", String.class);
         ArgsParser parser = new ArgsParserBuilder()
-                .setConfiguration(new ArgsParserConfiguration().setExit(false))
+                .setConfiguration(new ArgsParserConfiguration().setExitOnException(false))
                 .setArguments(factory.getAll())
                 .build();
         // Todo: test more inputs
