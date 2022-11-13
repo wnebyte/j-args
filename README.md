@@ -8,7 +8,7 @@ A flexible argument-parser library.
 
 ## Sample
 
-Example 1:    
+### 1: How to declare and parse arguments
 
 The code below creates two arguments using the ArgumentFactory class; one required argument of type int, 
 and one optional argument of type string.
